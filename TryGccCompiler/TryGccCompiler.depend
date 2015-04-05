@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1428235104 source:c:\users\mingxuan\dropbox\工作用\计算机图形学\trygcccompiler\main.c
+	<stdio.h>
+	<stdlib.h>
+

@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1428235268 source:c:\users\mingxuan\dropbox\工作用\计算机图形学\source\main.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
