@@ -1,0 +1,250 @@
+%\documentclass[]{ctexart}
+% !Mode:: "TeX:UTF-8"
+\documentclass{article}
+\usepackage{listings}
+\usepackage[bf,small,indentafter,pagestyles]{titlesec}
+\usepackage{CJK}
+
+\begin{document}
+\begin{CJK*}{GBK}{song}
+更改感觉到风
+发的是嘎嘎上的
+\section{Hello}
+asgfasgwagsadgagsdf发的
+试了很多次，表明当使用section 的时候，如果在括号内包含中文的话，在有代码的情况下无法正常输出，没有中文的话可以正常输出；
+如果是没有代码的话，可以正常使用section作为一种包来使用。
+
+\lstset{numbers=none,
+  numberstyle=\scriptsize,
+  frame=none,
+  flexiblecolumns=false,
+  language=,
+  basicstyle=\ttfamily\tiny,
+  breaklines=true,
+  extendedchars=true,
+  escapechar=~,
+  texcl=true,
+  showstringspaces=false,
+  keywordstyle=\bfseries,
+  xleftmargin=-5em,
+  xrightmargin=-8em,
+  aboveskip=1em,
+  tabsize=4}
+
+\begin{lstlisting}[language=C, label=lst:helloworld, caption=Answer, numbers=left, stepnumber=1, frame=leftline , texcl=true, basicstyle=\ttfamily]
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define ABS_FLOAT_0  0.00001
+
+int main()
+{
+    typedef struct point{
+        float x;
+        float y;
+    }point;
+    typedef struct triangle{
+        point A;
+        point B;
+        point C;
+    }triangle;
+
+    float Side_length (point M , point N ){
+        float length ;
+        length = fabs( sqrt((M.x - N.x)*(M.x - N.x) + (M.y - N.y)*(M.y - N.y)) );
+        return length ;
+    }
+
+    int Is_triangle(triangle one){
+
+
+        float AB ,AC ,BC ;
+        AB = Side_length(one.A , one.B );
+        AC = Side_length(one.A , one.C );
+        BC = Side_length(one.B , one.C );
+
+        if ( ( (AB*AC*BC)> 0 )&&( (AB+BC) > AC )&&( (AB+AC) > BC ) &&( (AC+BC) > AB )  )
+            return 1;
+        else
+            return 0;
+    }
+    float Get_Triangle_Square (point A , point B ,point C ){
+        float AB ,AC ,BC ;
+        float  square , semi_perimeter ;
+        AB = Side_length(A , B );
+        AC = Side_length(A , C );
+        BC = Side_length(B , C );
+        semi_perimeter =( AB + AC + BC )/2 ;
+        square = sqrt(semi_perimeter * (semi_perimeter - AB ) * (semi_perimeter - BC ) * (semi_perimeter - AC ) );
+        return square;
+    }
+
+    int Is_display(point CIE_point , point A , point B ,point C){
+        float SABC , SADB , SADC , SBDC ;
+        float SumSquare ;
+        SABC = Get_Triangle_Square(A ,B ,C);
+        SADB = Get_Triangle_Square(A, CIE_point ,B);
+        SADC = Get_Triangle_Square(A , CIE_point , C);
+        SBDC = Get_Triangle_Square(B ,CIE_point , C );
+        SumSquare = SADC + SADB + SBDC ;
+        if((-ABS_FLOAT_0 < ( SABC - SumSquare )) && ((SABC - SumSquare) < ABS_FLOAT_0   )){
+            return 1;
+        }
+        else{
+        return 0 ;
+        }
+    }
+
+    float color_x , color_y , color_z ;
+    float CIE_x , CIE_y;
+    point CIE_point;
+    triangle Galaxy , iPad , AdobeRGB , sRGB ;
+    int status_G = -1 , status_i = -1 , status_A = -1 , status_s = -1 ;
+    int count = 0;
+
+       (Galaxy.A).x = 0.6627 ; (Galaxy.A).y = 0.3365  ;
+       (Galaxy.B).x = 0.1750 ; (Galaxy.B).y = 0.7315  ;
+       (Galaxy.C).x = 0.1440 ; (Galaxy.C).y = 0.0431  ;
+       (iPad.A).x   = 0.6476 ; (iPad.A).y   = 0.3293  ;
+       (iPad.B).x   = 0.3062 ; (iPad.B).y   = 0.6109  ;
+       (iPad.C).x   = 0.1525 ; (iPad.C).y   = 0.0454  ;
+       (AdobeRGB.A).x = 0.64; (AdobeRGB.A).y = 0.33 ;
+       (AdobeRGB.B).x = 0.21; (AdobeRGB.B).y = 0.71 ;
+       (AdobeRGB.C).x = 0.15; (AdobeRGB.C).y = 0.16 ;
+       (sRGB.A).x   = 0.64; (sRGB.A).y = 0.33 ;
+       (sRGB.B).x   = 0.30; (sRGB.B).y = 0.60 ;
+       (sRGB.C).x   = 0.15; (sRGB.C).y = 0.06 ;
+
+
+
+    while (scanf(" %f %f %f " , &color_x,&color_y,&color_z) != EOF ){
+
+       CIE_x = color_x/(color_x + color_y + color_z);
+       CIE_y = color_y/(color_x + color_y + color_z);
+
+       CIE_point.y = CIE_y;
+
+       status_G = -1 , status_i = -1 , status_A = -1 , status_s = -1 ;
+       status_G = Is_display (CIE_point , Galaxy.A , Galaxy.B , Galaxy.C );
+       status_i = Is_display (CIE_point , iPad.A , iPad.B , iPad.C );
+       status_A = Is_display (CIE_point , AdobeRGB.A , AdobeRGB.B , AdobeRGB.C );
+       status_s = Is_display (CIE_point , sRGB.A , sRGB.B , sRGB.C );
+
+       count++;
+       printf("#######################Color%d########################\n",count );
+       printf("##                           Status                ##\n");
+       printf("##  Device:Galaxy               %d                  ##\n",status_G );
+       printf("##  Device:iPad2                %d                  ##\n",status_i );
+       printf("##  Standard:AdobeRGB           %d                  ##\n",status_A );
+       printf("##  Standard:sRGB               %d                  ##\n",status_s );
+       printf("##                                                 ##\n");
+       printf("## When Status is 1  , it means This color can be  ##\n");
+       printf("## displayed in Devices\/Standard ,if Status is 0 , ##\n");
+       printf("## it means can not be.                            ##\n");
+       printf("#####################################################\n");
+       printf("\n");
+       printf("\n");
+       printf("\n");
+       printf("if you want to test more Colors' CIE-XYZ ,Please input \n");
+       printf("Color_X  Color_Y Color_Z  \n");
+    }
+    return 0;
+}
+
+OUTPUT IS:
+
+97.98 100.00 95.75
+#######################Color1########################
+##                           Status                ##
+##  Device:Galaxy               1                  ##
+##  Device:iPad2                1                  ##
+##  Standard:AdobeRGB           1                  ##
+##  Standard:sRGB               1                  ##
+##                                                 ##
+## When Status is 1  , it means This color can be  ##
+## displayed in Devices/Standard ,if Status is 0 , ##
+## it means can not be.                            ##
+#####################################################
+
+
+
+if you want to test more Colors' CIE-XYZ ,Please input
+Color_X  Color_Y Color_Z
+47.35 85.00 12.40
+#######################Color2########################
+##                           Status                ##
+##  Device:Galaxy               1                  ##
+##  Device:iPad2                1                  ##
+##  Standard:AdobeRGB           1                  ##
+##  Standard:sRGB               0                  ##
+##                                                 ##
+## When Status is 1  , it means This color can be  ##
+## displayed in Devices/Standard ,if Status is 0 , ##
+## it means can not be.                            ##
+#####################################################
+
+
+
+if you want to test more Colors' CIE-XYZ ,Please input
+Color_X  Color_Y Color_Z
+131.72   211.00  344.70
+#######################Color3########################
+##                           Status                ##
+##  Device:Galaxy               1                  ##
+##  Device:iPad2                0                  ##
+##  Standard:AdobeRGB           1                  ##
+##  Standard:sRGB               0                  ##
+##                                                 ##
+## When Status is 1  , it means This color can be  ##
+## displayed in Devices/Standard ,if Status is 0 , ##
+## it means can not be.                            ##
+#####################################################
+
+
+
+if you want to test more Colors' CIE-XYZ ,Please input
+Color_X  Color_Y Color_Z
+19.18    72.00   11.68
+#######################Color4########################
+##                           Status                ##
+##  Device:Galaxy               1                  ##
+##  Device:iPad2                0                  ##
+##  Standard:AdobeRGB           0                  ##
+##  Standard:sRGB               0                  ##
+##                                                 ##
+## When Status is 1  , it means This color can be  ##
+## displayed in Devices/Standard ,if Status is 0 , ##
+## it means can not be.                            ##
+#####################################################
+
+
+
+if you want to test more Colors' CIE-XYZ ,Please input
+Color_X  Color_Y Color_Z
+
+
+\end{lstlisting}
+发生的馆娃宫--------------------------
+---------------------------------------
+\begin{figure}
+  \centering
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=]{}\\
+  \caption{}\label{}
+\end{figure}
+
+
+
+
+
+
+
+%\begin{frame}[fragile]
+%\frametitle{Your title}
+
+%\lstinputlisting[language=C, label=lst:helloworld, caption=Answer, numbers=left, stepnumber=1, frame=leftline , texcl=true, basicstyle=\ttfamily]{main.c}
+
+%\end{frame}
+\end{CJK*}
+\end{document}

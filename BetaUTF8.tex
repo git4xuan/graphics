@@ -1,0 +1,374 @@
+\documentclass[UTF8]{article}
+\usepackage{ctex}
+\usepackage{listings}
+\usepackage[bf,small,indentafter,pagestyles]{titlesec}
+\usepackage{url}
+\begin{document}
+%\titleformat{\chapter}[hang]{\centering\LARGE\bfseries}{\chaptername}{1em}{}
+\author{彭峰  05121214}
+\date{2015-4-7}
+\title{ 计算机图形学第一次作业  } 
+\titlespacing{\chapter}{0pt}{*0}{*4}
+\titlelabel{\S\thetitle\quad}
+
+\tableofcontents
+~
+~
+\maketitle
+%\chapter{章节}没有渲染，可能少包了。
+\section{前言}
+这是任选计算机图形学的第一次编程作业，要求给出简单解题思路、计算结果、结论、程序代码。
+相关的图片部分放于网上，作业放于github上。
+\section{相关解答}
+\subsection{前置知识了解}
+这次作业查阅了一定量资料，由于未知的原因CNKI一直登不上（真是见鬼，那么晚都没登上），所以资料主要来源于Google。下面简单写写。
+\subsubsection{CIE xy色度图}
+因为人类眼睛有响应不同波长范围的三种类型的颜色传感器，所有可视颜色的完整绘图是三维的。但是颜色的概念可以分为两部分：明度和色度。例如，白色是明亮的颜色，而灰色被认为是不太亮的白色。换句话说，白色和灰色的色度是一样的，而明度不同。
+CIE XYZ色彩空间故意设计得Y参数是颜色的明度或亮度的测量。颜色的色度接着通过两个导出参数x和y来指定，它们是所有三个三色刺激值X、Y和Z的函数所规范化的三个值中的两个：
+\begin{equation} \label{eq:solve}
+x = \frac{X}{X+Y+Z}
+\end{equation}
+\begin{equation}
+y = \frac{Y}{X+Y+Z}
+\end{equation}
+\begin{equation}
+z = \frac{Z}{X+Y+Z} = 1 - x - y
+\end{equation}
+导出的色彩空间用x, y, Y来指定，它叫做CIE xyY色彩空间并在实践中广泛用于指定颜色。
+X和Z三色刺激值可以从色度值x和y与Y三色刺激值计算回来：
+\begin{equation}
+X=\frac{Y}{y}x
+\end{equation}
+\begin{equation}
+Z=\frac{Y}{y}(1-x-y)
+\end{equation}
+
+\subsubsection{色品坐标}
+CIE三原色光
+红原色光    R=700.00nm
+绿原色光    G=546.1nm
+蓝原色光    B=435.8nm
+色品坐标
+
+
+三原色各自在R+G+B总量中的相对比例（记为r, g, b)
+CIE RGB空间可以被用来以常规方式定义色度：色度坐标是r和g:
+
+
+\begin{equation}
+r= \frac{R}{R+G+B}
+\end{equation}
+
+\begin{equation}
+g= \frac{G}{R+G+B}
+\end{equation}
+
+\subsubsection{判断坐标是否在要求的色域三角形内}
+主要是判断坐标是否在色域三角形内，转为判断一个点是否在指定的三角形内
+。算法的方法较多，主要有下面几种：
+\begin{enumerate}
+\item  通过计算三个小三角形的面积是否和三角形的面积相等来判断
+\item  通过向量叉乘的方法判断
+\item  通过向量点乘的方法判断
+\end{enumerate}
+
+这里不做过多叙述。
+
+\subsection{计算结果}
+
+\lstset{numbers=none,
+  numberstyle=\scriptsize,
+  frame=none,
+  flexiblecolumns=false,
+  language=,
+  basicstyle=\ttfamily\tiny,
+  breaklines=true,
+  extendedchars=true,
+  escapechar=~,
+  texcl=true,
+  showstringspaces=false,
+  keywordstyle=\bfseries,
+  xleftmargin=0em,
+  xrightmargin=-6em,
+  aboveskip=1em,
+  tabsize=4}
+
+\begin{lstlisting}[language=C, label=lst:4coloroutput, caption=Answers, numbers=left, stepnumber=1, frame=leftline , texcl=true, basicstyle=\ttfamily]
+
+YOU SHOULD INPUT COLOR_X  , COLOR_Y  , COLOR_Z
+
+THE OUTPUT IS:
+
+97.98 100.00 95.75
+#######################Color1########################
+##                           Status                ##
+##  Device:Galaxy               1                  ##
+##  Device:iPad2                1                  ##
+##  Standard:AdobeRGB           1                  ##
+##  Standard:sRGB               1                  ##
+##                                                 ##
+## When Status is 1  , it means This color can be  ##
+## displayed in Devices/Standard ,if Status is 0 , ##
+## it means can not be.                            ##
+#####################################################
+
+
+
+if you want to test more Colors' CIE-XYZ ,Please input
+Color_X  Color_Y Color_Z
+47.35 85.00 12.40
+#######################Color2########################
+##                           Status                ##
+##  Device:Galaxy               1                  ##
+##  Device:iPad2                1                  ##
+##  Standard:AdobeRGB           1                  ##
+##  Standard:sRGB               0                  ##
+##                                                 ##
+## When Status is 1  , it means This color can be  ##
+## displayed in Devices/Standard ,if Status is 0 , ##
+## it means can not be.                            ##
+#####################################################
+
+
+
+if you want to test more Colors' CIE-XYZ ,Please input
+Color_X  Color_Y Color_Z
+131.72   211.00  344.70
+#######################Color3########################
+##                           Status                ##
+##  Device:Galaxy               1                  ##
+##  Device:iPad2                0                  ##
+##  Standard:AdobeRGB           1                  ##
+##  Standard:sRGB               0                  ##
+##                                                 ##
+## When Status is 1  , it means This color can be  ##
+## displayed in Devices/Standard ,if Status is 0 , ##
+## it means can not be.                            ##
+#####################################################
+
+
+
+if you want to test more Colors' CIE-XYZ ,Please input
+Color_X  Color_Y Color_Z
+19.18    72.00   11.68
+#######################Color4########################
+##                           Status                ##
+##  Device:Galaxy               1                  ##
+##  Device:iPad2                0                  ##
+##  Standard:AdobeRGB           0                  ##
+##  Standard:sRGB               0                  ##
+##                                                 ##
+## When Status is 1  , it means This color can be  ##
+## displayed in Devices/Standard ,if Status is 0 , ##
+## it means can not be.                            ##
+#####################################################
+
+
+
+if you want to test more Colors' CIE-XYZ ,Please input
+Color_X  Color_Y Color_Z
+
+
+\end{lstlisting}
+
+
+\subsection{结论}
+\subsubsection{两种设备的比较}
+\begin{itemize}
+\item  这里只对色域部分进行简单比较，多点测试时表明Galaxy的可能更广
+\item  Galaxy 四点测试全部通过，iPad通过两点。
+\end{itemize}
+\subsubsection{两种标准的比较}
+\begin{itemize}
+\item  已知AdobeRGB的色域比sRGB的色域更广
+\item  AdobeRGB通过三点，sRGB通过两点
+\end{itemize}
+\subsubsection{其他}
+\begin{itemize}
+\item  本次由于没有使用MATLAB作图，所以无法判断色域包含情况和色域位置。
+\item  无法详细比较色域的重叠情况，无法详细输出设备覆盖AdobeRGB和sRGB的范围。
+\item  好像Galaxy屏幕比较牛逼，当时是AMOLED屏？接着iPad2还在IPS那里混？
+\end{itemize}
+
+
+\subsection{程序代码}
+%%%%%%%%%%%%%%%%应该是这里的章节将下面的代码包住了，导致了不能正常的输出，需要将这个部分包起来。这是部分不兼容的原因，还是不要使用CJK的好，GBK编码太坑爹，GB10830这个扩展的编码方式简直没救了。
+
+\subsubsection{源代码}
+
+\lstset{numbers=none,
+  numberstyle=\scriptsize,
+  frame=none,
+  flexiblecolumns=false,
+  language=,
+  basicstyle=\ttfamily\tiny,
+  breaklines=true,
+  extendedchars=true,
+  escapechar=~,
+  texcl=true,
+  showstringspaces=false,
+  keywordstyle=\bfseries,
+  xleftmargin=0em,
+  xrightmargin=-6em,
+  aboveskip=1em,
+  tabsize=4}
+
+\begin{lstlisting}[language=C, label=lst:Sources, caption=Sources, numbers=left, stepnumber=1, frame=leftline , texcl=true, basicstyle=\ttfamily]
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define ABS_FLOAT_0  0.00001
+
+
+int main()
+{
+    typedef struct point{
+        float x;
+        float y;
+    }point;
+    typedef struct triangle{
+        point A;
+        point B;
+        point C;
+    }triangle;
+
+    float Side_length (point M , point N ){
+        float length ;
+        length = fabs( sqrt((M.x - N.x)*(M.x - N.x) + (M.y - N.y)*(M.y - N.y)) );
+        return length ;
+    }
+
+    int Is_triangle(triangle one){  //判断
+
+
+        float AB ,AC ,BC ;
+        AB = Side_length(one.A , one.B );
+        AC = Side_length(one.A , one.C );
+        BC = Side_length(one.B , one.C );
+
+        if ( ( (AB*AC*BC)> 0 )&&( (AB+BC) > AC )&&( (AB+AC) > BC ) &&( (AC+BC) > AB )  )
+            return 1;
+        else
+            return 0;
+    }
+    float Get_Triangle_Square (point A , point B ,point C ){
+        float AB ,AC ,BC ;
+        float  square , semi_perimeter ;
+        AB = Side_length(A , B );
+        AC = Side_length(A , C );
+        BC = Side_length(B , C );
+        semi_perimeter =( AB + AC + BC )/2 ;
+        square = sqrt(semi_perimeter * (semi_perimeter - AB ) * (semi_perimeter - BC ) * (semi_perimeter - AC ) );
+        return square;
+    }
+
+    int Is_display(point CIE_point , point A , point B ,point C){
+        float SABC , SADB , SADC , SBDC ;
+        float SumSquare ;
+        SABC = Get_Triangle_Square(A ,B ,C);
+        SADB = Get_Triangle_Square(A, CIE_point ,B);
+        SADC = Get_Triangle_Square(A , CIE_point , C);
+        SBDC = Get_Triangle_Square(B ,CIE_point , C );
+        SumSquare = SADC + SADB + SBDC ;
+        if((-ABS_FLOAT_0 < ( SABC - SumSquare )) && ((SABC - SumSquare) < ABS_FLOAT_0   )){
+            return 1;
+        }
+        else{
+        return 0 ;
+        }
+    }
+
+    float color_x , color_y , color_z ;
+    float CIE_x , CIE_y;
+    point CIE_point;
+    triangle Galaxy , iPad , AdobeRGB , sRGB ;
+    int status_G = -1 , status_i = -1 , status_A = -1 , status_s = -1 ;
+    int count = 0;
+
+       (Galaxy.A).x = 0.6627 ; (Galaxy.A).y = 0.3365  ;
+       (Galaxy.B).x = 0.1750 ; (Galaxy.B).y = 0.7315  ;
+       (Galaxy.C).x = 0.1440 ; (Galaxy.C).y = 0.0431  ;
+       (iPad.A).x   = 0.6476 ; (iPad.A).y   = 0.3293  ;
+       (iPad.B).x   = 0.3062 ; (iPad.B).y   = 0.6109  ;
+       (iPad.C).x   = 0.1525 ; (iPad.C).y   = 0.0454  ;
+       (AdobeRGB.A).x = 0.64; (AdobeRGB.A).y = 0.33 ;
+       (AdobeRGB.B).x = 0.21; (AdobeRGB.B).y = 0.71 ;
+       (AdobeRGB.C).x = 0.15; (AdobeRGB.C).y = 0.16 ;
+       (sRGB.A).x   = 0.64; (sRGB.A).y = 0.33 ;
+       (sRGB.B).x   = 0.30; (sRGB.B).y = 0.60 ;
+       (sRGB.C).x   = 0.15; (sRGB.C).y = 0.06 ;
+
+
+
+    while (scanf(" %f %f %f " , &color_x,&color_y,&color_z) != EOF ){
+
+       CIE_x = color_x/(color_x + color_y + color_z);
+       CIE_y = color_y/(color_x + color_y + color_z);
+
+       CIE_point.y = CIE_y;
+
+       status_G = -1 , status_i = -1 , status_A = -1 , status_s = -1 ;
+       status_G = Is_display (CIE_point , Galaxy.A , Galaxy.B , Galaxy.C );
+       status_i = Is_display (CIE_point , iPad.A , iPad.B , iPad.C );
+       status_A = Is_display (CIE_point , AdobeRGB.A , AdobeRGB.B , AdobeRGB.C );
+       status_s = Is_display (CIE_point , sRGB.A , sRGB.B , sRGB.C );
+
+       count++;
+       printf("#######################Color%d########################\n",count );
+       printf("##                           Status                ##\n");
+       printf("##  Device:Galaxy               %d                  ##\n",status_G );
+       printf("##  Device:iPad2                %d                  ##\n",status_i );
+       printf("##  Standard:AdobeRGB           %d                  ##\n",status_A );
+       printf("##  Standard:sRGB               %d                  ##\n",status_s );
+       printf("##                                                 ##\n");
+       printf("## When Status is 1  , it means This color can be  ##\n");
+       printf("## displayed in Devices/Standard ,if Status is 0 , ##\n");
+       printf("## it means can not be.                            ##\n");
+       printf("#####################################################\n");
+       printf("\n");
+       printf("\n");
+       printf("\n");
+       printf("if you want to test more Colors' CIE-XYZ ,Please input \n");
+       printf("Color_X  Color_Y Color_Z  \n");
+    }
+    return 0;
+}
+\end{lstlisting}            
+~
+\subsubsection{简单解释}
+
+\begin{lstlisting}[language=,texcl=true, basicstyle=\ttfamily]
+
+判断三角形存在函数 Is_triangle()，不过这次只是写上去，并没有使用。
+求三角形面积函数 Get_Triangle_Square()。
+判断要求的点是否在三角形内的函数Is_display(),使用三角形面积判断的方式。两种设备和两个标准的相关值被固化在程序内部。
+输出没有更人性化，直接将返回值返回了。
+
+\end{lstlisting}
+\subsubsection{缺陷}
+
+\begin{enumerate}
+\item   扩展性不好，只是习惯性的可以输入多个数值。没有可以输入多个色域的函数。
+\item   输出没有更人性化，没有提示输入，输出只使用了0 和 1 表示。
+\item   偷懒没有使用MATLAB，额，其实已经好久没有用过了，还占地方。
+\end{enumerate}
+
+\subsection{参考资料}
+二维平面上判断点是否在三角形内~
+
+\url{http://www.cnblogs.com/TenosDoIt/p/4024413.html}
+
+CIE的Presentation~
+
+\url{https://www.academia.edu/8313696/第二章_CIE标准色度系统1}
+
+WiKi~
+\url{http://zh.wikipedia.org/wiki/CIE1931色彩空间}
+
+题目的图片~
+
+\url{http://fengidea.qiniudn.com/graphics-20150407-002.jpg}
+
+\end{document}
